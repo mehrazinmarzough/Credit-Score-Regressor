@@ -1,10 +1,9 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.impute import KNNImputer
 from sklearn.ensemble import HistGradientBoostingRegressor
-from sklearn.metrics import mean_squared_error
-
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
 
 # making all the data numerical
 df = pd.read_csv("CreditPrediction.csv")
@@ -25,7 +24,7 @@ df.reset_index(level=None, drop=True, inplace=True)
 # splitting the data into train and test
 data = df.drop('Credit_Limit', axis=1)
 target = df['Credit_Limit']
-x_train, x_test, y_train, y_test = train_test_split(data, target, test_size=0.2, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(data, target, test_size=0.2, shuffle=True)
 x_train.reset_index(level=None, drop=True, inplace=True)
 y_train.reset_index(level=None, drop=True, inplace=True)
 x_test.reset_index(level=None, drop=True, inplace=True)
@@ -36,7 +35,6 @@ features = x_train
 scaler = preprocessing.StandardScaler()
 scaled_features = scaler.fit_transform(features)
 normalized_train = pd.DataFrame(scaled_features, columns=[x_train.columns])
-normalized_train['Credit_Limit'] = y_train
 
 # imputing missing data in train set
 knn_imputer = KNNImputer(n_neighbors=5)
@@ -46,16 +44,20 @@ imputed_x_train = pd.DataFrame(imputed_data, columns=numerical_cols)
 
 # scaling the test data
 features = x_test
-scaler = preprocessing.StandardScaler()
 scaled_features = scaler.fit_transform(features)
 normalized_test = pd.DataFrame(scaled_features, columns=[x_test.columns])
-normalized_test['Credit_Limit'] = y_test
+
 
 # training the regressor
 model = HistGradientBoostingRegressor()
-model.fit(imputed_x_train, y_train)
+model.fit(x_train, y_train)
 y_pred = model.predict(normalized_test)
 
+print("Hist:")
 # MSE
 mse = mean_squared_error(y_test, y_pred)
 print("Mean Squared Error:", mse)
+
+# R-Score
+r2 = r2_score(y_test, y_pred)
+print("R-squared:", r2)
