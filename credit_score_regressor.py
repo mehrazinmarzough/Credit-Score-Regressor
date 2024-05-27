@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
+from sklearn.impute import KNNImputer
 
 
 df = pd.read_csv("CreditPrediction.csv")
@@ -34,4 +35,8 @@ scaled_features = scaler.fit_transform(features)
 normalized_df = pd.DataFrame(scaled_features, columns=[x_train.columns])
 normalized_df['Credit_Limit'] = y_train
 
-print(normalized_df.info())
+knn_imputer = KNNImputer(n_neighbors=5)
+numerical_cols = normalized_df.select_dtypes(include=['number']).columns
+imputed_data = knn_imputer.fit_transform(normalized_df[numerical_cols])
+imputed_x_train = pd.DataFrame(imputed_data, columns=numerical_cols)
+print(imputed_x_train.isna().sum())
