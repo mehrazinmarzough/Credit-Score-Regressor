@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 df = pd.read_csv("CreditPrediction.csv")
 df.drop_duplicates(inplace=True)
@@ -17,4 +18,10 @@ df = pd.get_dummies(df, columns=['Marital_Status'])
 
 df.reset_index(level=None, drop=True, inplace=True)
 
-print(df.info())
+data = df.drop('Credit_Limit',axis=1)
+target = df['Credit_Limit']
+x_train, x_test, y_train, y_test = train_test_split(data, target, test_size=0.2, random_state=42)
+x_train.reset_index(level=None, drop=True, inplace=True)
+y_train.reset_index(level=None, drop=True, inplace=True)
+x_test.reset_index(level=None, drop=True, inplace=True)
+y_test.reset_index(level=None, drop=True, inplace=True)
