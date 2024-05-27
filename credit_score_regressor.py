@@ -2,6 +2,9 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.impute import KNNImputer
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import HistGradientBoostingRegressor
+
 
 # making all the data numerical
 df = pd.read_csv("CreditPrediction.csv")
@@ -47,3 +50,8 @@ scaler = preprocessing.StandardScaler()
 scaled_features = scaler.fit_transform(features)
 normalized_test = pd.DataFrame(scaled_features, columns=[x_test.columns])
 normalized_test['Credit_Limit'] = y_test
+
+# training the regressor
+model = HistGradientBoostingRegressor()
+model.fit(imputed_x_train, y_train)
+y_pred = model.predict(normalized_test)
