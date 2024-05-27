@@ -32,12 +32,18 @@ y_test.reset_index(level=None, drop=True, inplace=True)
 features = x_train
 scaler = preprocessing.StandardScaler()
 scaled_features = scaler.fit_transform(features)
-normalized_df = pd.DataFrame(scaled_features, columns=[x_train.columns])
-normalized_df['Credit_Limit'] = y_train
+normalized_train = pd.DataFrame(scaled_features, columns=[x_train.columns])
+normalized_train['Credit_Limit'] = y_train
 
 # imputing missing data in train set
 knn_imputer = KNNImputer(n_neighbors=5)
-numerical_cols = normalized_df.select_dtypes(include=['number']).columns
-imputed_data = knn_imputer.fit_transform(normalized_df[numerical_cols])
+numerical_cols = normalized_train.select_dtypes(include=['number']).columns
+imputed_data = knn_imputer.fit_transform(normalized_train[numerical_cols])
 imputed_x_train = pd.DataFrame(imputed_data, columns=numerical_cols)
 
+# scaling the test data
+features = x_test
+scaler = preprocessing.StandardScaler()
+scaled_features = scaler.fit_transform(features)
+normalized_test = pd.DataFrame(scaled_features, columns=[x_test.columns])
+normalized_test['Credit_Limit'] = y_test
