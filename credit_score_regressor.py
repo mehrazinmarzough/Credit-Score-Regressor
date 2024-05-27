@@ -2,8 +2,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.impute import KNNImputer
-from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import HistGradientBoostingRegressor
+from sklearn.metrics import mean_squared_error
 
 
 # making all the data numerical
@@ -55,3 +55,7 @@ normalized_test['Credit_Limit'] = y_test
 model = HistGradientBoostingRegressor()
 model.fit(imputed_x_train, y_train)
 y_pred = model.predict(normalized_test)
+
+# MSE
+mse = mean_squared_error(y_test, y_pred)
+print("Mean Squared Error:", mse)
